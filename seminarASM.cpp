@@ -3,13 +3,69 @@
 #include <iostream> 
 
 using namespace std;
-int main() {
 
+void dif(int a, int b) {
+    int c;
+	c = a - b;
+    cout << c << endl;
+}
+
+// ESP
+// a        push 9      (a and be are in reverse order if we use C for some reason)
+// b        push 5
+// adr      call dif    <- ESP (moves here)
+// EBP old <- EBP
+//
+// push ebp     |
+// mov ebp, esp | always use these two before calling
+// ------   |
+// ------   | this is placeholder for the funciton immplementation
+// pop ebp
+// ret
+// 
+// ZONT CHANGE EBP INSIDE FUNCTISHUN
+
+int main() {
+    _asm {
+        push dword ptr 5
+        push dword ptr 9
+        call dif
+        add esp, 8
+    }
 }
 
 // SEMINAR 4
 
+// ESP
+// a        push 9      (a and be are in reverse order if we use C for some reason)
+// b        push 5
+// adr      call dif    <- ESP (moves here)
+// EBP old <- EBP
+//
+// push ebp     |
+// mov ebp, esp | always use these two before calling
+// ------   |
+// ------   | this is placeholder for the funciton immplementation
+// pop ebp
+// ret
+// 
+// ZONT CHANGE EBP INSIDE FUNCTISHUN
+
 /*
+void dif(int a, int b) {
+    int c;
+    c = a - b;
+    cout << c << endl;
+}
+
+int main() {
+    _asm {
+        push dword ptr 5
+        push dword ptr 9
+        call dif
+        add esp, 8
+    }
+}
 
 */
 
