@@ -1,7 +1,6 @@
 // pspspsps
 
 #include <iostream> 
-
 using namespace std;
 
 void dif(int a, int b) {
