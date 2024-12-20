@@ -10,28 +10,21 @@ void dif(int a, int b) {
     cout << c << endl;
 }
 
-// ESP
-// a        push 9      (a and be are in reverse order if we use C for some reason)
-// b        push 5
-// adr      call dif    <- ESP (moves here)
-// EBP old <- EBP
-//
-// push ebp     |
-// mov ebp, esp | always use these two before calling
-// ------   |
-// ------   | this is placeholder for the funciton immplementation
-// pop ebp
-// ret
-// 
-// ZONT CHANGE EBP INSIDE FUNCTISHUN
-
-int main() {
+void difASM(int a, int b) {
+    const char* s = "%d";
     _asm {
-        push dword ptr 5
-        push dword ptr 9
-        call dif
+        mov eax, a
+        sub eax, b
+        push eax
+        push s
+        call printf
         add esp, 8
     }
+}
+
+int main() {
+	difASM(9, 5);
+    return 0;
 }
 
 // SEMINAR 4
@@ -58,6 +51,18 @@ void dif(int a, int b) {
     cout << c << endl;
 }
 
+void difASM(int a, int b) {
+    const char* s = "%d";
+    _asm {
+        mov eax, a
+        sub eax, b
+        push eax
+        push s
+        call printf
+        add esp, 8
+    }
+}
+
 int main() {
     _asm {
         push dword ptr 5
@@ -65,6 +70,8 @@ int main() {
         call dif
         add esp, 8
     }
+    // difASM(9, 5);
+    return 0;
 }
 
 */
