@@ -1,28 +1,34 @@
 // pspspsps
 
-#include <iostream> 
+#include <iostream>
+#include <cstdarg>
+
 using namespace std;
 
-void dif(int a, int b) {
-    int c;
-	c = a - b;
-    cout << c << endl;
-}
+unsigned fact(unsigned n) {
+    if (n == 0) return 1;
+	else return n * fact(n - 1);
 
-void difASM(int a, int b) {
-    const char* s = "%d";
     _asm {
-        mov eax, a
-        sub eax, b
-        push eax
-        push s
-        call printf
-        add esp, 8
+		mov eax, n
+		cmp eax, 0
+		jne not_zero
+		mov eax, 1
+		jmp outside
+        not_zero :
+		dec eax
+			push eax
+			call fact
+			pop eax
+			imul eax, n
+			mov n, eax
+            outside :
+        mov eax, 1
     }
 }
 
 int main() {
-	difASM(9, 5);
+    cout << fact(3);
     return 0;
 }
 
@@ -73,6 +79,30 @@ int main() {
     return 0;
 }
 
+*/
+
+/*
+int sum(unsigned n, ...) {
+    //for (int i = 0; i < n; i++) { }
+    _asm { // eax and edx are for returning values, no need for push and pop like we did with ebx
+        push ebx
+        mov eax, 0
+        mov ebx, 1
+    forloop:
+        cmp ebx, n
+            ja theend
+        add eax, [ebp + ebx * 4 + 8]
+        inc ebx
+        jmp forloop
+    theend :
+        pop ebx
+    }
+}
+
+int main() {
+    cout << sum(5, 1, 2, 3, 4, 5);
+    return 0;
+}
 */
 
 // SEMINAR 3
