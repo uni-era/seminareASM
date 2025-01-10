@@ -4,7 +4,7 @@
 using namespace std;
 
 struct Complex {
-	int re, im;
+	int re, im; // 0 bytes, 4 bytes
 };
 
 void prod(Complex* c1, Complex* c2, Complex* c3) {
@@ -14,11 +14,23 @@ void prod(Complex* c1, Complex* c2, Complex* c3) {
     _asm {
         mov ebx, c1
         mov ecx, c2
+        mov esi, c3
         mov eax, [ebx] // c1->re
-		imul [ecx] // c2->re
-		mov [c3], eax // registru in loc de c3 pls
+		mul [ecx] // c2->re
+		mov [esi], eax // c3->re becomes eax
+        mov eax, 0
 		mov eax, [ebx + 4] // c1->im
-		imul[ecx + 4] // c2->im
+		mul [ecx + 4] // c2->im
+		sub [esi], eax // c3->re is done
+
+		mov eax, [ebx] // c1->re
+		imul [ecx + 4] // c2->im
+        mov [esi +4], eax
+		mov eax, 0
+		mov eax, [ebx + 4] // c1->im
+		imul [ecx]
+		add [esi + 4], eax
+        mov c3, esi
     }
     cout << c3->re << " " << c3->im;
 }
@@ -28,15 +40,17 @@ int main() {
     c1.re = 5;
     c1.im = 14;
 
-    Complex c1;
-    c1.re = 5;
-    c1.im = 14;
+	Complex c2;
+	c2.re = 3;
+	c2.im = 7;
 
-    _asm {
-		mov dword ptr c, 5 // merge si c.re, c.im
-		mov dword ptr c + 4, 14
-    }
-	prod(&c, &c, &c);
+    Complex c3;
+
+    //_asm {
+	//	mov dword ptr c1, 5 // merge si c.re, c.im
+	//	mov dword ptr c1 + 4, 14
+    //}
+	prod(&c1, &c2, &c3);
     return 0;
 }
 
