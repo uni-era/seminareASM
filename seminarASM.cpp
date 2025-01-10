@@ -1,36 +1,58 @@
 // pspspsps
 
 #include <iostream>
-#include <cstdarg>
-
 using namespace std;
 
-unsigned fact(unsigned n) {
-    if (n == 0) return 1;
-	else return n * fact(n - 1);
-
+int sum(int t[], int n) {
+	//for (int i = 0; i < n; i++)
+	//	s += t[i];
+	//return s;
     _asm {
-		mov eax, n
-		cmp eax, 0
-		jne not_zero
-		mov eax, 1
-		jmp outside
-        not_zero :
-		dec eax
-			push eax
-			call fact
-			pop eax
-			imul eax, n
-			mov n, eax
-            outside :
-        mov eax, 1
+        mov eax, 0 // or 0 since int says 0 it dont rly matter
+        mov ebx, 0
+        mov ecx, n
+    myloop :
+        cmp ebx, ecx
+            jge outside // jump WHEN i IS >= TO 5 GIRL NOT BEFORE
+            add eax, t[ebx * 4] // se misca din 4 in 4, cand i e 1 avem un prim set de 4 biti etc
+            inc ebx
+            jmp myloop
+    outside :
+
     }
+        
 }
 
 int main() {
-    cout << fact(3);
+    int t[] = { 2, -1, 8, 4, 7 };
+	//int x = sum(t, 5);
+    cout << sum(t, 5); // BIG UGLY VALUE // automatically reads the last value in the eax register
     return 0;
 }
+
+// SEMINAR 5
+
+/*    int t[] = { 2, -1, 8, 4, 7 };
+	int i, s = 0;
+	//for (i = 0; i < 5; i++)
+		//s += t[i];
+
+    _asm {
+        mov eax, s // or 0 since int says 0 it dont rly matter
+        mov ebx, 0
+    myloop:
+        cmp ebx, 5
+		jge outside // jump WHEN i IS >= TO 5 GIRL NOT BEFORE
+        add eax, t[ebx * 4] // se misca din 4 in 4, cand i e 1 avem un prim set de 4 biti etc
+        inc ebx
+        jmp myloop
+    outside:
+        mov s, eax // keep this outside, you dont need to do this every time tf
+    }
+
+    cout << s;
+    // t[ebx*4]
+    return 0;*/
 
 // SEMINAR 4
 
@@ -101,6 +123,44 @@ int sum(unsigned n, ...) {
 
 int main() {
     cout << sum(5, 1, 2, 3, 4, 5);
+    return 0;
+}
+*/
+
+/*
+unsigned fact(unsigned n) {
+    if (n = 0) return 1;
+    return n * fact(n-1);
+}
+
+*/
+
+/*
+#include <cstdarg>
+
+unsigned fact(unsigned n) {
+
+    _asm {
+        // push n-1 --> NO GOOD
+        mov ebx, n
+        cmp ebx, 0
+            je iszero
+        dec ebx
+        push ebx
+        call fact
+        add esp, 4
+        mul n
+        jmp end1
+    iszero:
+        mov eax, 1
+    end1:
+    }
+}
+
+int main() {
+    unsigned f;
+    cin >> f;
+    cout << fact(f);
     return 0;
 }
 */
