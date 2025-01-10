@@ -10,11 +10,11 @@ int sum(int t[], int n) {
     _asm {
         mov eax, 0 // or 0 since int says 0 it dont rly matter
         mov ebx, 0
-        mov ecx, n
+        mov ecx, t
     myloop :
-        cmp ebx, ecx
+        cmp ebx, n
             jge outside // jump WHEN i IS >= TO 5 GIRL NOT BEFORE
-            add eax, t[ebx * 4] // se misca din 4 in 4, cand i e 1 avem un prim set de 4 biti etc
+            add eax, [ecx + ebx * 4] // se misca din 4 in 4, cand i e 1 avem un prim set de 4 biti etc
             inc ebx
             jmp myloop
     outside :
