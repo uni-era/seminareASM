@@ -3,30 +3,40 @@
 #include <iostream>
 using namespace std;
 
-int sum(int t[], int n) {
-	//for (int i = 0; i < n; i++)
-	//	s += t[i];
-	//return s;
-    _asm {
-        mov eax, 0 // or 0 since int says 0 it dont rly matter
-        mov ebx, 0
-        mov ecx, t
-    myloop :
-        cmp ebx, n
-            jge outside // jump WHEN i IS >= TO 5 GIRL NOT BEFORE
-            add eax, [ecx + ebx * 4] // se misca din 4 in 4, cand i e 1 avem un prim set de 4 biti etc
-            inc ebx
-            jmp myloop
-    outside :
+struct Complex {
+	int re, im;
+};
 
+void prod(Complex* c1, Complex* c2, Complex* c3) {
+	//c3->re = c1->re * c2->re - c1->im * c2->im;
+	//c3->im = c1->re * c2->im + c1->im * c2->re;
+
+    _asm {
+        mov ebx, c1
+        mov ecx, c2
+        mov eax, [ebx] // c1->re
+		imul [ecx] // c2->re
+		mov [c3], eax // registru in loc de c3 pls
+		mov eax, [ebx + 4] // c1->im
+		imul[ecx + 4] // c2->im
     }
-        
+    cout << c3->re << " " << c3->im;
 }
 
 int main() {
-    int t[] = { 2, -1, 8, 4, 7 };
-	//int x = sum(t, 5);
-    cout << sum(t, 5); // BIG UGLY VALUE // automatically reads the last value in the eax register
+    Complex c1;
+    c1.re = 5;
+    c1.im = 14;
+
+    Complex c1;
+    c1.re = 5;
+    c1.im = 14;
+
+    _asm {
+		mov dword ptr c, 5 // merge si c.re, c.im
+		mov dword ptr c + 4, 14
+    }
+	prod(&c, &c, &c);
     return 0;
 }
 
@@ -53,6 +63,98 @@ int main() {
     cout << s;
     // t[ebx*4]
     return 0;*/
+
+/*int sum(int t[], int n) {
+	//for (int i = 0; i < n; i++)
+	//	s += t[i];
+	//return s;
+    _asm {
+        mov eax, 0 // or 0 since int says 0 it dont rly matter
+        mov ebx, 0
+        mov ecx, t
+    myloop :
+        cmp ebx, n
+            jge outside // jump WHEN i IS >= TO 5 GIRL NOT BEFORE
+            add eax, [ecx + ebx * 4] // se misca din 4 in 4, cand i e 1 avem un prim set de 4 biti etc
+                                     // we use this to act like a pointer since we pass a pointer to an outside function!!!
+            inc ebx
+            jmp myloop
+    outside :
+
+    }
+        
+}
+
+int main() {
+    int t[] = { 2, -1, 8, 4, 7 };
+	//int x = sum(t, 5);
+    cout << sum(t, 5); // BIG UGLY VALUE // automatically reads the last value in the eax register
+    return 0;
+}*/
+
+/*
+    _asm {
+        mov eax, 0 // for s
+        mov ebx, 0
+        //mov ecx, 0
+        loopONE:
+            cmp ebx, 3
+                jge outside
+            inc ebx
+            mov ecx, 0
+            loopTWO :
+                cmp ecx, 3
+                    jge loopONE
+                inc ecx
+                jmp loopTWO
+        outside :
+    }*/
+
+/*
+    int m[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
+    int i, j, s = 0;
+    for (i = 0; i < 3; i++)
+        for (j = 0; j < 3; j++)
+            s += m[i][j];
+
+    _asm {
+        mov ebx, 0
+        mov edi, 0
+        for_i:
+            cmp edi, 3
+            jge end_i
+            mov esi, 0
+            for_j:
+                cmp esi, 3
+                jge end_j
+
+                mov eax, 3 // 3 because matrices is 3 by 3 bitch
+                mul edi
+                add eax, esi
+
+                add ebx, m[eax * 4]
+                inc esi
+
+                jmp for_j
+        end_j:
+            inc edi
+            jmp for_i
+        end_i:
+            mov s, ebx
+    }
+    cout << s;
+
+
+    int** m;
+    m = new int* [3];
+    for (i = 0, i < 3, i++)
+        m[i] = new int[3];
+
+    _asm {
+        mov eax, m
+        mov eax, [eax + edi * 4]
+        add ..., [eax+ esi * 4]
+    }*/
 
 // SEMINAR 4
 
