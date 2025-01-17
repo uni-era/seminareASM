@@ -2,57 +2,149 @@
 
 #include <iostream>
 using namespace std;
+const float zero = 0.0;
 
-struct Complex {
-	int re, im; // 0 bytes, 4 bytes
+struct Point {
+    float x;
+    float y;
 };
 
-void prod(Complex* c1, Complex* c2, Complex* c3) {
-	//c3->re = c1->re * c2->re - c1->im * c2->im;
-	//c3->im = c1->re * c2->im + c1->im * c2->re;
+
+int main() {
+    Point p1 = { 2.0, 1.5 };
+    Point p2 = { 5.0, 5.5 };
+
+    float rez;
+
+    //sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y)*(p2.y - p1.y));
 
     _asm {
-        mov ebx, c1
-        mov ecx, c2
-        mov esi, c3
-        mov eax, [ebx] // c1->re
-		mul [ecx] // c2->re
-		mov [esi], eax // c3->re becomes eax
-        mov eax, 0
-		mov eax, [ebx + 4] // c1->im
-		mul [ecx + 4] // c2->im
-		sub [esi], eax // c3->re is done
+        movss XMM0, dword ptr p1
+        movss XMM1, dowrd ptr p1 + 4 // why this dont work???
+        movss XMM2, dword ptr p2
+        movss XMM3, dword ptr p2 + 4
 
-		mov eax, [ebx] // c1->re
-		imul [ecx + 4] // c2->im
-        mov [esi +4], eax
-		mov eax, 0
-		mov eax, [ebx + 4] // c1->im
-		imul [ecx]
-		add [esi + 4], eax
-        mov c3, esi
+		subss XMM2, XMM0
+		mulss XMM2, XMM2
+
+		subss XMM3, XMM1
+		mulss XMM3, XMM3
+
+        addss XMM2, XMM3
+		sqrtss XMM4, XMM2
+
+        movss rez, XMM4
+		
     }
-    cout << c3->re << " " << c3->im;
+    
+
+    cout << rez;
+    return 0;
+}
+
+// SEMINAR 6
+
+/*
+int main() {
+
+    float t[] = { 1.5, -2.25, 3.75, 4, 10 };
+    int i; float s = 0;
+    _asm {
+        movss XMM0, s
+        mov ebx, 0
+
+        myloop:
+        cmp ebx, 5 //
+            jge outside
+            addss XMM0, t[ebx * 4] // 4 = sizeof(float) and int but we gyatta check dis ||| double is 8
+            inc ebx
+            jmp myloop
+
+            outside :
+        movss s, XMM0
+    }
+    cout << s;
+    //printf("%f", s);
+    return 0;
+}
+
+*/
+
+/*
+float f(float t[], int n) {
+    float rez;
+    _asm {
+        movss XMM0, zero
+        mov ecx, t // pointer goes into normal register!!!
+        mov ebx, 0
+
+        myloop:
+        cmp ebx, n  // 
+            jge outside
+        addss XMM0, [ecx + ebx * 4]
+        inc ebx
+        jmp myloop
+
+        outside :
+        movss rez, XMM0
+        fld rez
+    }
 }
 
 int main() {
-    Complex c1;
-    c1.re = 5;
-    c1.im = 14;
 
-	Complex c2;
-	c2.re = 3;
-	c2.im = 7;
+    float t[] = { 1.5, -2.25, 3.75, 4, 10 };
 
-    Complex c3;
-
-    //_asm {
-	//	mov dword ptr c1, 5 // merge si c.re, c.im
-	//	mov dword ptr c1 + 4, 14
-    //}
-	prod(&c1, &c2, &c3);
+    cout << f(t, 5);
+    //printf("%f", s);
     return 0;
 }
+*/
+
+/*  media aritmetica
+float f(float t[], int n) {
+    float rez;
+    _asm {
+        movss XMM0, zero
+        mov ecx, t // pointer goes into normal register!!!
+        mov ebx, 0
+
+        myloop:
+        cmp ebx, n  //
+            jge outside
+        addss XMM0, [ecx + ebx * 4]
+        inc ebx
+        jmp myloop
+
+            outside :
+        cvtsi2ss XMM1, n
+        divss XMM0, XMM1
+        movss rez, XMM0
+        fld rez
+    }
+}
+
+*/
+
+/* works BUT RADULESCU ZICE CA NU E BUN NUS DC
+movss XMM2, p1
+        movss XMM3, p2
+        mov eax, 0
+        mov ebx, 0
+
+        movss XMM0, p1[eax]
+        subss XMM0, p2[ebx]
+        mulss XMM0, XMM0
+
+        movss XMM1, p1[eax + 4]
+        subss XMM1, p2[ebx + 4]
+        mulss XMM1, XMM1
+
+        addss XMM0, XMM1
+        sqrtss XMM0, XMM0
+        movss rez, XMM0
+*/
+
 
 // SEMINAR 5
 
@@ -76,7 +168,64 @@ int main() {
 
     cout << s;
     // t[ebx*4]
-    return 0;*/
+    return 0;
+    
+    //
+    //
+    //
+
+    struct Complex {
+    int re, im; // 0 bytes, 4 bytes
+};
+
+void prod(Complex* c1, Complex* c2, Complex* c3) {
+    //c3->re = c1->re * c2->re - c1->im * c2->im;
+    //c3->im = c1->re * c2->im + c1->im * c2->re;
+
+    _asm {
+        mov ebx, c1
+        mov ecx, c2
+        mov esi, c3
+        mov eax, [ebx] // c1->re
+        mul [ecx] // c2->re
+        mov [esi], eax // c3->re becomes eax
+        mov eax, 0
+        mov eax, [ebx + 4] // c1->im
+        mul [ecx + 4] // c2->im
+        sub [esi], eax // c3->re is done
+
+        mov eax, [ebx] // c1->re
+        imul [ecx + 4] // c2->im
+        mov [esi +4], eax
+        mov eax, 0
+        mov eax, [ebx + 4] // c1->im
+        imul [ecx]
+        add [esi + 4], eax
+        mov c3, esi
+    }
+    cout << c3->re << " " << c3->im;
+}
+
+int main() {
+    Complex c1;
+    c1.re = 5;
+    c1.im = 14;
+
+    Complex c2;
+    c2.re = 3;
+    c2.im = 7;
+
+    Complex c3;
+
+    //_asm {
+    //	mov dword ptr c1, 5 // merge si c.re, c.im
+    //	mov dword ptr c1 + 4, 14
+    //}
+    prod(&c1, &c2, &c3);
+    return 0;
+}
+    
+    */
 
 /*int sum(int t[], int n) {
 	//for (int i = 0; i < n; i++)
